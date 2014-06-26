@@ -5,6 +5,20 @@ class Phone extends AbstractRule
 {
     public function validate($input)
     {
-        return !empty($input) && preg_match('/^[+]?([\d]{0,3})?[\(\.\-\s]?([\d]{1,3})[\)\.\-\s]*(([\d]{3,5})[\.\-\s]?([\d]{4})|([\d]{2}[\.\-\s]?){4})$/', $input);
+        $countryCode = '[+]?([\d]{0,3})?';
+        $separator = '\.\-\s';
+        $space = "[${separator}]?";
+        $openSeparator = "[\(${separator}]";
+        $endSeparator = "[\)${separator}]";
+
+        $_99_99_99_99 = "([\d]{2}${space}){4}"; // Allows: 99-99-99-99 or 99999999
+        $_9999 = "([\d]{4})"; // Allows: 9999
+        $phoneSufix = "${_9999}|${_99_99_99_99}";
+
+        $countryAndAreaCode = "${countryCode}${openSeparator}?([\d]{1,3})${endSeparator}";
+        $phonePrefix = "(\d{3,5})";
+        $phone = "(${phonePrefix}${space}${phoneSufix})";
+
+        return !empty($input) && preg_match("/^${countryAndAreaCode}*${phone}$/", $input);
     }
 }
