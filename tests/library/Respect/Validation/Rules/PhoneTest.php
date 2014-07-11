@@ -76,6 +76,11 @@ class PhoneTest extends \PHPUnit_Framework_TestCase
             array('11 97777 7777'),
             array('(11) 97777 7777'),
             array('(11) 97777-7777'),
+            // Caribbean phone numbers
+            array('5555555'),
+            array('555 5555'),
+            array('(809) 555-5555'),
+            array('809-555-5555'),
         );
     }
 
@@ -85,8 +90,6 @@ class PhoneTest extends \PHPUnit_Framework_TestCase
             array('123'),
             array('s555-5555'),
             array('555-5555'),
-            array('5555555'),
-            array('555.5555'),
             array('555-555'),
             array('555555'),
             array('555+5555'),
