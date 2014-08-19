@@ -111,5 +111,57 @@ class AllOfTest extends \PHPUnit_Framework_TestCase
             array($valid1, $theInvalidOne, $valid2)
         );
     }
+
+    public function testValidationFailsAndRetunsFullMessage()
+    {
+        $allRules = new AllOf(new Int, new Positive);
+        $failsValidation = -1;
+        $expectedExceptionMessage = <<<EOT
+\-These rules must pass for "-1"
+  \-"-1" must be positive
+EOT;
+        try {
+            $allRules->assert($failsValidation);
+        } catch (\EXception $e) {
+            $this->assertEquals(
+                $expectedExceptionMessage,
+                $e->getFullMessage(),
+                'Full exception message is different from the one expected.'
+            );
+
+            return true;
+        }
+
+        $this->fail('An exception should be caught above.');
+    }
+
+    /**
+     * @issue 179
+     */
+    public function testGetFullMessageOnArrayKeyValidationMissingJustOneKey()
+    {
+        $failsValidation = array();
+        $expectedExceptionMessage = <<<EOT
+\-These rules must pass for Testing
+  \-Key user must be present
+EOT;
+
+        $arrayValidator= new AllOf(
+            new Arr(),
+            new Key('host', new String())
+        );
+        $arrayValidator->setName('Testing');
+
+        try {
+            $arrayValidator->assert($failsValidation);
+        } catch(\Exception $e) {
+             return $this->assertEquals(
+                $expectedExceptionMessage,
+                $e->getFullMessage(),
+                'Full exception message is different from the one expected.'
+            );
+        }
+        $this->fail('An exception should be caught above.');
+    }
 }
 
